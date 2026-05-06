@@ -347,6 +347,10 @@ async function update_contact_attribute(contact_attribute, contact_id, new_value
 }
 
 async function delete_contact(contact_id) {
+    const answer = confirm("Delete this contact?");
+    if (!answer) {
+        return;
+    }
     if (REQUEST_CONTROL) return;
     REQUEST_CONTROL = true;
 
@@ -355,12 +359,11 @@ async function delete_contact(contact_id) {
     });
     const response = await request.json();
     console.log(response);
-    if (response.ok) {
-        notify("success", response.message);
-    } else {
+    if (!response.ok && response.error) {
         notify("error", response.error);
+    } else {
+        notify("success", response.message);
     }
-
     REQUEST_CONTROL = false;
     await init_table();
 }
