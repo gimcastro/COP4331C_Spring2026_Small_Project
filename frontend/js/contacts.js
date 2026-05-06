@@ -38,6 +38,34 @@ function favoriteContacts(contact_id) {
     init_table();
 }
 
+// Label Contact functions
+function getLabels() {
+    const labels = localStorage.getItem("labels");
+    if (!labels) {
+        return {};
+    }
+    return JSON.parse(labels);
+}
+
+function getContactLabel(contact_id) {
+    const labels = getLabels();
+    return labels[contact_id] || "";
+}
+
+function setContactLabel(contact_id) {
+    let labels = getLabels();
+    const current_label = labels[contact_id] || "";
+    const new_label = prompt("Label Name:", current_label);
+
+    if (new_label === null) {
+        return;
+    }
+
+    labels[contact_id] = new_label;
+    localStorage.setItem("labels", JSON.stringify(labels));
+    init_table();
+}
+
 async function search_contacts(query) {
     console.log("Search function was called with query: " + query);
 
@@ -101,6 +129,14 @@ function update_button(contact_id) {
                 onClick="favoriteContacts(${contact_id})"
             >
                 ${favorite_icon}
+            </button>
+
+            <button
+                class="bg-slate-700 text-white px-2 py-1 rounded"
+                title="Add label"
+                onClick="setContactLabel(${contact_id})"
+            >
+                ${getContactLabel(contact_id) || "Label"}
             </button>
 
             <button
